@@ -1,9 +1,7 @@
 import { createContext, useEffect, useState, useCallback } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
-import PropTypes from "prop-types"; // ✅ For prop validation
-
-
+import PropTypes from "prop-types"; // ✅ Prop validation
 
 export const AppContext = createContext();
 
@@ -13,55 +11,57 @@ const AppContextProvider = ({ children }) => {
 
   const [doctors, setDoctors] = useState([]);
   const [token, setToken] = useState(localStorage.getItem("token") || "");
-  const [userData, setUserData] = useState(false);
+  const [userData, setUserData] = useState(null); // ✅ use null for clarity
 
-  // ✅ Memoize API functions to avoid redefinition on each render
-  const getDoctosData = useCallback(async () => {
+  // ✅ Fetch doctors list
+  const getDoctorsData = useCallback(async () => {
     try {
       const { data } = await axios.get(`${backendUrl}/api/doctor/list`);
-      if (data.success) {
+      if (data.success && Array.isArray(data.doctors)) {
         setDoctors(data.doctors);
       } else {
-        toast.error(data.message);
+        toast.error(data.message || "Failed to fetch doctors");
       }
     } catch (error) {
-      console.error(error);
-      toast.error(error.message);
+      console.error("Error fetching doctors:", error);
+      toast.error(error?.response?.data?.message || "Something went wrong while fetching doctors.");
     }
   }, [backendUrl]);
 
+  // ✅ Fetch user profile
   const loadUserProfileData = useCallback(async () => {
     try {
       const { data } = await axios.get(`${backendUrl}/api/user/get-profile`, {
         headers: { token },
       });
-
-      if (data.success) {
+      if (data.success && data.userData) {
         setUserData(data.userData);
       } else {
-        toast.error(data.message);
+        toast.error(data.message || "Failed to load user profile");
       }
     } catch (error) {
-      console.error(error);
-      toast.error(error.message);
+      console.error("Error fetching user profile:", error);
+      toast.error(error?.response?.data?.message || "Something went wrong while fetching user data.");
     }
   }, [backendUrl, token]);
 
-  // Load doctors list
+  // 🔁 Fetch doctors on mount
   useEffect(() => {
-    getDoctosData();
-  }, [getDoctosData]);
+    getDoctorsData();
+  }, [getDoctorsData]);
 
-  // Load user profile if token exists
+  // 🔁 Fetch user data when token changes
   useEffect(() => {
     if (token) {
       loadUserProfileData();
+    } else {
+      setUserData(null); // ✅ Clear user data on logout
     }
   }, [token, loadUserProfileData]);
 
   const value = {
     doctors,
-    getDoctosData,
+    getDoctorsData,
     currencySymbol,
     backendUrl,
     token,
@@ -78,7 +78,7 @@ const AppContextProvider = ({ children }) => {
   );
 };
 
-// ✅ Add prop-types validation
+// ✅ Prop validation
 AppContextProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };

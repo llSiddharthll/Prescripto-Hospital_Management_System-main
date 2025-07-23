@@ -77,15 +77,8 @@ Hospital Management, MERN Stack, MongoDB, Express.js, React, Node.js, Healthcare
 # Contributors
 [Abhishek Bisht](https://github.com/abhishekbisht0203)
 
-# Deployment Links
-[Prescripto Backend](https://prescriptobackend-4ylq.onrender.com)
-
-[Prescripto Patient Panel](https://prescripto-hospital-management-system.vercel.app/)
-
-[Prescripto Admin/Doctor Panel](https://prescripto-hospital-management-system-c29o.vercel.app/)
-
 # Contact
-For any questions or feedback, please contact [Niraj Kumar](https://www.linkedin.com/in/nirajkumar-nk/)
+For any questions or feedback, please contact [Abhishek Bisht](https://www.linkedin.com/in/abhishek-bisht-876541308/)
 
 # License
 This project is licensed under the MIT License.

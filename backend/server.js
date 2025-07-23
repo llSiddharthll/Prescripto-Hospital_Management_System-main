@@ -16,24 +16,28 @@ connectCloudinary();
 
 // ✅ Allow specific frontend origins
 const allowedOrigins = [
-  "http://localhost:5173", // Local frontend
-  "https://your-frontend-domain.com" // Replace with deployed frontend URL
+  "http://localhost:5173", // 🛠️ Local frontend (development)
+  "https://prescripto-frontend.onrender.com", // 🟢 Replace with your deployed frontend domain
 ];
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+    origin: function (origin, callback) {
+      if (!origin) {
+        // Allow requests like Postman (no origin)
+        return callback(null, true);
+      }
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("CORS not allowed for this origin: " + origin));
+        callback(new Error(`❌ CORS not allowed for this origin: ${origin}`));
       }
     },
-    credentials: true, // Allow cookies and authorization headers
+    credentials: true, // ✅ Allow cookies/auth headers
   })
 );
 
-// ✅ Handle preflight requests
+// ✅ Handle preflight OPTIONS requests
 app.options("*", cors());
 
 // Middlewares
@@ -46,8 +50,10 @@ app.use("/api/doctor", doctorRouter);
 
 // Test route
 app.get("/", (req, res) => {
-  res.send("API Working");
+  res.send("✅ API Working");
 });
 
 // Start server
-app.listen(port, () => console.log(`Server started on PORT:${port}`));
+app.listen(port, () =>
+  console.log(`✅ Server started on PORT:${port}`)
+);
