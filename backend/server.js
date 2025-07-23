@@ -14,31 +14,8 @@ const port = process.env.PORT || 4000;
 connectDB();
 connectCloudinary();
 
-// ✅ Allow specific frontend origins
-const allowedOrigins = [
-  "http://localhost:5173", // 🛠️ Local frontend (development)
-  "https://prescripto-frontend.onrender.com", // 🟢 Replace with your deployed frontend domain
-];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) {
-        // Allow requests like Postman (no origin)
-        return callback(null, true);
-      }
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error(`❌ CORS not allowed for this origin: ${origin}`));
-      }
-    },
-    credentials: true, // ✅ Allow cookies/auth headers
-  })
-);
-
-// ✅ Handle preflight OPTIONS requests
-app.options("*", cors());
+app.use(cors());
 
 // Middlewares
 app.use(express.json());
